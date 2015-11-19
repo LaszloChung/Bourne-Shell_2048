@@ -133,7 +133,7 @@ game()
                                 do
                                     for j in $(seq 1 4)
                                         do
-                                            echo "line$i$j=$((line$i$j))" >> ./newgame1
+                                            echo "line$i$j=$((line$i$j))" >> ./tempgame
                                         done
                                 done
                         menu
@@ -176,14 +176,15 @@ case $return in
         break
         ;;
     R)
-        
+        #. ./tempgame 
+        echo $line11
         ;;
     L) 
         ;;
     S) 
         ;;
     Q) 
-        echo "Bye"
+        figlet "Say GoodBye"
         break
         ;;
 esac
