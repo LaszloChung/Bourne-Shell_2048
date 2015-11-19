@@ -139,24 +139,12 @@ game()
                         menu
                         ;;
                 esac
-                #for i in $(seq 1 4)
-                #    do
-                #        for j in $(seq 1 4)
-                #            do
-                #                if [ $((line$i$j)) = 0 ];then
-                #                    temp=$temp`echo -n "   "`
-                #                else
-                #                    temp=$temp`echo -n "$((line$i$j))"`
-                #                    temp=$temp`echo -e "\t|"`
-                #                fi
-                #            done
-                #        temp=$temp`echo ""`
-                #    done
                 
                 echo -e "\n\n$div$div2\t|$line11\t|$line12\t|$line13\t|$line14\t|\n$div2$div" \
                 "$div2\t|$line21\t|$line22\t|$line23\t|$line24\t|\n$div2$div" \
                 "$div2\t|$line31\t|$line32\t|$line33\t|$line34\t|\n$div2$div" \
-                "$div2\t|$line41\t|$line42\t|$line43\t|$line44\t|\n$div2$div" | dialog --progressbox 25 50
+                "$div2\t|$line41\t|$line42\t|$line43\t|$line44\t|\n$div2$div" \
+                "\n\tUSE w,s,a,d to MOVE ; q to EXIT \n\t\t Get $winscore to WIN!" | dialog --progressbox 25 50
                 getc press
             done 
 }
@@ -167,7 +155,7 @@ dialog --title 'menu' --menu "Command Line 2048" 15 50 100 N "New Game" R "Resum
 return=$(cat /tmp/chotemp)
 case $return in
     N)
-        touch tempgame
+        echo "" > tempgame
         line11="" line12="" line13="" line14=2
         line21="" line22=2 line23="" line24=""
         line31="" line32="" line33="" line34=""
@@ -176,8 +164,9 @@ case $return in
         break
         ;;
     R)
-        #. ./tempgame 
+        . ./tempgame 
         echo $line11
+        sleep 10
         ;;
     L) 
         ;;
@@ -185,6 +174,7 @@ case $return in
         ;;
     Q) 
         figlet "Say GoodBye"
+        rm ./tempgame
         break
         ;;
 esac
