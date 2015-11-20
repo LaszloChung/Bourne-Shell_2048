@@ -150,22 +150,18 @@ game()
                 case $press in
                     w)
                         moveup
-                        sleep 0.5
                         randpiece
                         ;;
                     s)
                         movedown
-                        sleep 0.5
                         randpiece
                         ;;
                     a)
                         moveleft
-                        sleep 0.5
                         randpiece
                         ;;
                     d)
                         moveright
-                        sleep 0.5
                         randpiece
                         ;;
                     q)
@@ -179,16 +175,18 @@ game()
                         menu
                         ;;
                 esac
-                
-                echo -e "\n\n$div$div2\t|$line11\t|$line12\t|$line13\t|$line14\t|\n$div2$div" \
-                "$div2\t|$line21\t|$line22\t|$line23\t|$line24\t|\n$div2$div" \
-                "$div2\t|$line31\t|$line32\t|$line33\t|$line34\t|\n$div2$div" \
-                "$div2\t|$line41\t|$line42\t|$line43\t|$line44\t|\n$div2$div" \
-                "\n\tUSE w,s,a,d to MOVE ; q to EXIT \n\t\t Get $winscore to WIN!" | sed 's/0//g' | dialog --progressbox 25 50
                 getc press
             done 
 }
 
+bprint()
+{
+    echo -e "\n\n$div$div2\t|$line11\t|$line12\t|$line13\t|$line14\t|\n$div2$div" \
+    "$div2\t|$line21\t|$line22\t|$line23\t|$line24\t|\n$div2$div" \
+    "$div2\t|$line31\t|$line32\t|$line33\t|$line34\t|\n$div2$div" \
+    "$div2\t|$line41\t|$line42\t|$line43\t|$line44\t|\n$div2$div" \
+    "\n\tUSE w,s,a,d to MOVE ; q to EXIT \n\t\t Get $winscore to WIN!" | sed 's/0//g' | dialog --progressbox 25 50
+}
 menu()
 {
 dialog --title 'menu' --menu "Command Line 2048" 15 50 100 N "New Game" R "Resume" L "Load" S "Save" Q "Quit" 2> /tmp/chotemp
