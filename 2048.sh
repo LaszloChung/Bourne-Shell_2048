@@ -59,16 +59,24 @@ movedown()
 {
     for row in $(seq 1 4)
         do
-        for col in $(seq 1 3)
+        for col in $(seq 3 1)
             do
                 for compar in $(seq $(($col+1)) 4)
+                    do
+                    if [ $((line$compar$row)) = $((line$col$row)) ];then
+                        eval line$compar$row=$(($((line$compar$row))*2))
+                        eval line$col$row=""
+                        break
+                    elif [ $((line$compar$row)) != 0 ];then
+                        break
+                    fi
+                    done
+                for compar in $(seq 4 $(($col+1)))
                     do
                     if [ $((line$compar$row)) = 0 ];then
                         eval line$compar$row=$((line$col$row))
                         eval line$col$row=""
-                   elif [ $((line$compar$row)) = $((line$col$row)) ];then
-                        eval line$compar$row=$(($((line$compar$row))*2))
-                        eval line$col$row=""
+                        break
                     fi
                     done
             done
@@ -87,7 +95,7 @@ moveleft()
                         eval line$col$compar=$(($((line$col$compar))*2))
                         eval line$col$row=""
                         break
-                    elif [ $((line$compar$row)) != 0 ];then
+                    elif [ $((line$col$compar)) != 0 ];then
                         break
                     fi
                     done
@@ -107,16 +115,24 @@ moveright()
 {
     for col in $(seq 1 4)
         do
-        for row in $(seq 1 3)
+        for row in $(seq 3 1)
             do
                 for compar in $(seq $(($row+1)) 4)
+                    do
+                    if [ $((line$col$compar)) = $((line$col$row)) ];then
+                        eval line$col$compar=$(($((line$col$compar))*2))
+                        eval line$col$row=""
+                        break
+                    elif [ $((line$col$compar)) != 0 ];then
+                        break
+                    fi
+                    done
+                for compar in $(seq 4 $(($row+1)))
                     do
                     if [ $((line$col$compar)) = 0 ];then
                         eval line$col$compar=$((line$col$row))
                         eval line$col$row=""
-                   elif [ $((line$col$compar)) = $((line$col$row)) ];then
-                        eval line$col$compar=$(($((line$col$compar))*2))
-                        eval line$col$row=""
+                        break
                     fi
                     done
             done
@@ -134,18 +150,22 @@ game()
                 case $press in
                     w)
                         moveup
+                        sleep 0.5
                         randpiece
                         ;;
                     s)
                         movedown
+                        sleep 0.5
                         randpiece
                         ;;
                     a)
                         moveleft
+                        sleep 0.5
                         randpiece
                         ;;
                     d)
                         moveright
+                        sleep 0.5
                         randpiece
                         ;;
                     q)
