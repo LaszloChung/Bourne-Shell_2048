@@ -71,7 +71,7 @@ movedown()
                         break
                     fi
                     done
-                for compar in $(seq 4 $(($col+1)))
+                for compar in $(seq $(($col+1)) 4)
                     do
                     if [ $((line$compar$row)) = 0 ];then
                         eval line$compar$row=$((line$col$row))
@@ -99,7 +99,7 @@ moveleft()
                         break
                     fi
                     done
-                for compar in $(seq 1 $(($row-1)))
+                for compar in $(seq $(($row-1)) 1)
                     do
                     if [ $((line$col$compar)) = 0 ];then
                         eval line$col$compar=$((line$col$row))
@@ -127,7 +127,7 @@ moveright()
                         break
                     fi
                     done
-                for compar in $(seq 4 $(($row+1)))
+                for compar in $(seq $(($row+1)) 4)
                     do
                     if [ $((line$col$compar)) = 0 ];then
                         eval line$col$compar=$((line$col$row))
@@ -150,18 +150,22 @@ game()
                 case $press in
                     w)
                         moveup
+                        bprint
                         randpiece
                         ;;
                     s)
                         movedown
+                        bprint
                         randpiece
                         ;;
                     a)
                         moveleft
+                        bprint
                         randpiece
                         ;;
                     d)
                         moveright
+                        bprint
                         randpiece
                         ;;
                     q)
@@ -175,6 +179,7 @@ game()
                         menu
                         ;;
                 esac
+                bprint
                 getc press
             done 
 }
