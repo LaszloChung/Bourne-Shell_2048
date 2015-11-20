@@ -9,9 +9,9 @@ getc ()
 
 randpiece()
 {
-    rand=`jot -r 1 1 4`
-    rand2=`jot -r 1 1 4`
-    rand3=`jot -r 1 2 4`
+    rand=`jot -r 1 1 4` #for  var col
+    rand2=`jot -r 1 1 4` #for var row
+    rand3=`jot -r 1 2 4` #for rand piece 2 or 4
     while [ $rand3 = 3 ]
         do
         rand3=`jot -r 1 2 4`
@@ -23,20 +23,32 @@ randpiece()
     fi
 }
 
+checkover()
+{
+}
+
 moveup()
 {
     for row in $(seq 1 4)
         do
         for col in $(seq 2 4)
             do
+                for compar in $(seq $(($col-1)) 1)
+                    do
+                    if [ $((line$compar$row)) = $((line$col$row)) ];then
+                        eval line$compar$row=$(($((line$compar$row))*2))
+                        eval line$col$row=""
+                        break
+                    elif [ $((line$compar$row)) != 0 ];then 
+                        break
+                    fi
+                    done
                 for compar in $(seq 1 $(($col-1)))
                     do
                     if [ $((line$compar$row)) = 0 ];then
                         eval line$compar$row=$((line$col$row))
                         eval line$col$row=""
-                   elif [ $((line$compar$row)) = $((line$col$row)) ];then
-                        eval line$compar$row=$(($((line$compar$row))*2))
-                        eval line$col$row=""
+                        break
                     fi
                     done
             done
@@ -47,9 +59,9 @@ movedown()
 {
     for row in $(seq 1 4)
         do
-        for col in $(seq 3 1)
+        for col in $(seq 1 3)
             do
-                for compar in $(seq 4 $(($col+1)))
+                for compar in $(seq $(($col+1)) 4)
                     do
                     if [ $((line$compar$row)) = 0 ];then
                         eval line$compar$row=$((line$col$row))
@@ -69,14 +81,22 @@ moveleft()
         do
         for row in $(seq 2 4)
             do
+                for compar in $(seq $(($row-1)) 1)
+                    do
+                    if [ $((line$col$compar)) = $((line$col$row)) ];then
+                        eval line$col$compar=$(($((line$col$compar))*2))
+                        eval line$col$row=""
+                        break
+                    elif [ $((line$compar$row)) != 0 ];then
+                        break
+                    fi
+                    done
                 for compar in $(seq 1 $(($row-1)))
                     do
                     if [ $((line$col$compar)) = 0 ];then
                         eval line$col$compar=$((line$col$row))
                         eval line$col$row=""
-                   elif [ $((line$col$compar)) = $((line$col$row)) ];then
-                        eval line$col$compar=$(($((line$col$compar))*2))
-                        eval line$col$row=""
+                        break
                     fi
                     done
             done
@@ -87,9 +107,9 @@ moveright()
 {
     for col in $(seq 1 4)
         do
-        for row in $(seq 3 1)
+        for row in $(seq 1 3)
             do
-                for compar in $(seq 4 $(($row+1)))
+                for compar in $(seq $(($row+1)) 4)
                     do
                     if [ $((line$col$compar)) = 0 ];then
                         eval line$col$compar=$((line$col$row))
@@ -105,8 +125,8 @@ moveright()
 
 game()
 {
-
         winscore=128
+        count=2
         div="\t---------------------------------\n"
         div2="\t|\t|\t|\t|\t|\n"
         while [ true ] 
@@ -173,7 +193,7 @@ case $return in
     S) 
         ;;
     Q) 
-        figlet "GoodBye !"
+        figlet "Good Bye !"
         if [ -e ./tempgame ];then
             rm ./tempgame
         fi
