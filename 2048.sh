@@ -34,7 +34,7 @@ moveup()
                     if [ $((line$compar$row)) = 0 ];then
                         eval line$compar$row=$((line$col$row))
                         eval line$col$row=""
-                   elif [ $((line$compar$row)) = $((line$col$row)) -a $((line$col$row)) != 0 ];then
+                   elif [ $((line$compar$row)) = $((line$col$row)) ];then
                         eval line$compar$row=$(($((line$compar$row))*2))
                         eval line$col$row=""
                     fi
@@ -54,7 +54,7 @@ movedown()
                     if [ $((line$compar$row)) = 0 ];then
                         eval line$compar$row=$((line$col$row))
                         eval line$col$row=""
-                   elif [ $((line$compar$row)) = $((line$col$row)) -a $((line$col$row)) != 0 ];then
+                   elif [ $((line$compar$row)) = $((line$col$row)) ];then
                         eval line$compar$row=$(($((line$compar$row))*2))
                         eval line$col$row=""
                     fi
@@ -74,7 +74,7 @@ moveleft()
                     if [ $((line$col$compar)) = 0 ];then
                         eval line$col$compar=$((line$col$row))
                         eval line$col$row=""
-                   elif [ $((line$col$compar)) = $((line$col$row)) -a $((line$col$row)) != 0 ];then
+                   elif [ $((line$col$compar)) = $((line$col$row)) ];then
                         eval line$col$compar=$(($((line$col$compar))*2))
                         eval line$col$row=""
                     fi
@@ -94,7 +94,7 @@ moveright()
                     if [ $((line$col$compar)) = 0 ];then
                         eval line$col$compar=$((line$col$row))
                         eval line$col$row=""
-                   elif [ $((line$col$compar)) = $((line$col$row)) -a $((line$col$row)) != 0 ];then
+                   elif [ $((line$col$compar)) = $((line$col$row)) ];then
                         eval line$col$compar=$(($((line$col$compar))*2))
                         eval line$col$row=""
                     fi
@@ -144,7 +144,7 @@ game()
                 "$div2\t|$line21\t|$line22\t|$line23\t|$line24\t|\n$div2$div" \
                 "$div2\t|$line31\t|$line32\t|$line33\t|$line34\t|\n$div2$div" \
                 "$div2\t|$line41\t|$line42\t|$line43\t|$line44\t|\n$div2$div" \
-                "\n\tUSE w,s,a,d to MOVE ; q to EXIT \n\t\t Get $winscore to WIN!" | dialog --progressbox 25 50
+                "\n\tUSE w,s,a,d to MOVE ; q to EXIT \n\t\t Get $winscore to WIN!" | sed 's/0//g' | dialog --progressbox 25 50
                 getc press
             done 
 }
@@ -173,8 +173,10 @@ case $return in
     S) 
         ;;
     Q) 
-        figlet "Say GoodBye"
-        rm ./tempgame
+        figlet "GoodBye !"
+        if [ -e ./tempgame ];then
+            rm ./tempgame
+        fi
         break
         ;;
 esac
