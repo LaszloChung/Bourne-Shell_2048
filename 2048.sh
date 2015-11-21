@@ -194,6 +194,24 @@ game()
             done 
 }
 
+saveload()
+{
+    savepath="./saves"
+    if [ ! -d $savepath ];then
+        mkdir $savepath
+    fi
+    for savenum in $(seq 1 5)
+        do
+            tempsave=$(ls $savepath | awk '{print $(eval $$savenum)}')
+            if [ -z $tempsave ];then
+                tempsave="Empty"
+            fi
+            eval save$savenum=$tempsave
+        done
+    dialog --title 'Save Menu' --menu "Save Game" 15 50 100 1 $save1 2 $save2 3 $save3 4 $save4 5 $save5
+    menu
+}
+
 bprint()
 {
     echo -e "\n\n$div$div2\t|$line11\t|$line12\t|$line13\t|$line14\t|\n$div2$div" \
@@ -204,7 +222,7 @@ bprint()
 }
 menu()
 {
-dialog --title 'menu' --menu "Command Line 2048" 15 50 100 N "New Game" R "Resume" L "Load" S "Save" Q "Quit" 2> /tmp/chotemp
+dialog --title 'Menu' --menu "Command Line 2048" 15 50 100 N "New Game" R "Resume" L "Load" S "Save" Q "Quit" 2> /tmp/chotemp
 return=$(cat /tmp/chotemp)
 case $return in
     N)
@@ -218,16 +236,17 @@ case $return in
         ;;
     R)
         ;;
-    L) 
+    L)
+        saveload
         ;;
-    S) 
+    S)
+        saveload
         ;;
     Q) 
         figlet "Good Bye !"
         if [ -e ./tempgame ];then
             rm ./tempgame
         fi
-        break
         ;;
 esac
 }
