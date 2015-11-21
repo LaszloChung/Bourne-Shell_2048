@@ -157,7 +157,7 @@ moveright()
 
 game()
 {
-        winscore=64
+        winscore=128
         major=0
         countp=2
         div="\t---------------------------------\n"
@@ -169,28 +169,31 @@ game()
                 case $press in
                     w)
                         moveup
+                        randpiece
                         ;;
                     s)
                         movedown
+                        randpiece
                         ;;
                     a)
                         moveleft
+                        randpiece
                         ;;
                     d)
                         moveright
+                        randpiece
                         ;;
                     q)
                         for i in $(seq 1 4)
                                 do
                                     for j in $(seq 1 4)
                                         do
-                                            echo "line$i$j=$((line$i$j))" >> ./tempgame
+                                            echo "line$i$j $((line$i$j))" >> ./tempgame
                                         done
                                 done
                         menu
                         ;;
                 esac
-                randpiece
             done 
 }
 
@@ -208,16 +211,27 @@ saveload()
                 eval save$savenum="Empty"
             fi
         done
-    dialog --title 'Save Menu' --menu "Save Game" 15 50 100 1 $save1 2 $save2 3 $save3 4 $save4 5 $save5 2> /tmp/chooption
-    chooption=$(cat /tmp/chooption)
     if [ $slstate = 1 ];then
-        
+        dialog --title 'Menu' --menu "Load Game" 15 50 100 1 $save1 2 $save2 3 $save3 4 $save4 5 $save5 2> /tmp/tmpoption
+        chooption=$(cat /tmp/tmpoption)
+        countline=1 # Skip line 1 - save name 
+        for i in $(seq 1 4)
+            do
+            for j in $(seq 1 4)
+                do
+                    countline=$(($countline + 1))
+                    eval line$i$j=$(cat $savepath/save$chooption | sed -n "${countline}p" | awk '{print $2}')
+                done
+            done
+        game
     elif [ $slstate = 2 ];then
+        dialog --title 'Menu' --menu "Save Game" 15 50 100 1 $save1 2 $save2 3 $save3 4 $save4 5 $save5 2> /tmp/tmpoption
+        chooption=$(cat /tmp/tmpoption)
         dialog --inputbox "Enter your save name" 8 30 2> /tmp/tmpsavename
         cat ./tempgame >> /tmp/tmpsavename
-        cp /tmp/tmpsavename $savepath/save$chooption && rm /tmp/chooption /tmp/tmpsavename
+        cp /tmp/tmpsavename $savepath/save$chooption && rm /tmp/tmpoption /tmp/tmpsavename
+        menu
     fi
-    menu
 }
 
 bprint()
@@ -231,9 +245,9 @@ bprint()
 
 menu()
 {
-dialog --title 'Menu' --menu "Command Line 2048" 15 50 100 N "New Game" R "Resume" L "Load" S "Save" Q "Quit" 2> /tmp/chotemp
+dialog --title 'Menu' --menu "Command Line 2048" 15 50 100 N "New Game" R "Resume" L "Load" S "Save" Q "Quit" 2> /tmp/tmpchoice
 slstate=0
-return=$(cat /tmp/chotemp)
+return=$(cat /tmp/tmpchoice)
 case $return in
     N)
         echo "" > tempgame
@@ -256,6 +270,7 @@ case $return in
         ;;
     Q) 
         figlet "Good Bye !"
+        rm /tmp/tmpchoice
         if [ -e ./tempgame ];then
             rm ./tempgame
         fi
