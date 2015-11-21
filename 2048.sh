@@ -29,7 +29,7 @@ randpiece()
 
 checkwin()
 {
-    if [ $((line$compar$row)) = $winscore ];then
+    if [ $((line$compar$row)) = $winscore -o $((line$col$compar)) = $winscore ];then
         dialog --ok-label "You Win" --textbox ./title/win 10 45
         winscore=0
     fi
@@ -157,7 +157,7 @@ moveright()
 
 game()
 {
-        winscore=128
+        winscore=64
         major=0
         countp=2
         div="\t---------------------------------\n"
@@ -169,19 +169,15 @@ game()
                 case $press in
                     w)
                         moveup
-                        randpiece
                         ;;
                     s)
                         movedown
-                        randpiece
                         ;;
                     a)
                         moveleft
-                        randpiece
                         ;;
                     d)
                         moveright
-                        randpiece
                         ;;
                     q)
                         for i in $(seq 1 4)
@@ -194,6 +190,7 @@ game()
                         menu
                         ;;
                 esac
+                randpiece
             done 
 }
 
