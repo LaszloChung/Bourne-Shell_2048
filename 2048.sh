@@ -17,7 +17,7 @@ randpiece()
         randp=`jot -r 1 2 4`
         done
     if [ $countp = 16 ];then
-        dialog --ok-label "You Lose" --msgbox "GameOver" 17 37
+        dialog --ok-label "You Lose" --textbox ./title/gameover 10 60
         winscore=0
     elif [ $((line$randc$randr)) = 0 ];then
         eval line$randc$randr=$randp
@@ -30,9 +30,8 @@ randpiece()
 checkwin()
 {
     if [ $((line$compar$row)) = $winscore ];then
-        dialog --ok-label "You Win" --msgbox "Congratulations !" 17 37
+        dialog --ok-label "You Win" --textbox ./title/win 10 45
         winscore=0
-        clear
     fi
 }
 
@@ -158,7 +157,7 @@ moveright()
 
 game()
 {
-        winscore=8
+        winscore=128
         major=0
         countp=2
         div="\t---------------------------------\n"
@@ -182,7 +181,6 @@ game()
                         ;;
                     d)
                         moveright
-                        #bprint
                         randpiece
                         ;;
                     q)
@@ -222,7 +220,6 @@ case $return in
         break
         ;;
     R)
-        #. ./tempgame 
         ;;
     L) 
         ;;
@@ -238,5 +235,5 @@ case $return in
 esac
 }
 
-dialog --exit-label "Go" --textbox ./welcome 17 37 && \
+dialog --exit-label "Go" --textbox ./title/welcome 17 37 && \
 menu
