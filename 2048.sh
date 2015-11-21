@@ -12,24 +12,24 @@ randpiece()
     randc=`jot -r 1 1 4` #for  var col
     randr=`jot -r 1 1 4` #for var row
     randp=`jot -r 1 2 4` #for rand piece 2 or 4
-    while [ $randp = 3 ]
+    while [ $randp = 3 ] # if rand = 3 do again
         do
         randp=`jot -r 1 2 4`
         done
-    if [ $countp = 16 ];then
+    if [ $countp = 16 ];then #max 16 pieces
         dialog --ok-label "You Lose" --textbox ./title/gameover 10 60
         winscore=0
-    elif [ $((line$randc$randr)) = 0 ];then
+    elif [ $((line$randc$randr)) = 0 ];then #looking for empty pieces
         eval line$randc$randr=$randp
         countp=$(($countp + 1))
     else
-        randpiece
+        randpiece #not found and do again
     fi
 }
 
 checkwin()
 {
-    if [ $((line$compar$row)) = $winscore -o $((line$col$compar)) = $winscore ];then
+    if [ $((line$compar$row)) = $winscore -o $((line$col$compar)) = $winscore ];then 
         dialog --ok-label "You Win" --textbox ./title/win 10 45
         winscore=0
     fi
@@ -188,7 +188,7 @@ game()
                                 do
                                     for j in $(seq 1 4)
                                         do
-                                            echo "line$i$j $((line$i$j))" >> ./tempgame
+                                            echo "line$i$j $((line$i$j))" >> ./tempgame #quit and save vars to temp
                                         done
                                 done
                         menu
@@ -206,24 +206,24 @@ saveload()
     fi
     for savenum in $(seq 1 5)
         do
-            eval save$savenum=$(cat $savepath/save$savenum | head -n 1)
+            eval save$savenum=$(cat $savepath/save$savenum | head -n 1) #check line 1 for save name
             if [ ! -s $savepath/save$savenum ];then
                 eval save$savenum="Empty"
             fi
         done
-    if [ $slstate = 1 ];then
+    if [ $slstate = 1 ];then #For load operation
         dialog --title 'Menu' --menu "Load Game" 15 50 100 1 $save1 2 $save2 3 $save3 4 $save4 5 $save5 2> /tmp/tmpoption
         chooption=$(cat /tmp/tmpoption)
         if [ $(eval echo "\$save$chooption") == "Empty" ];then
             dialog --msgbox "It's Empty!" 5 15
             menu
         elif [ $chooption ];then
-            countline=1 # Skip line 1 - save name 
+            countline=1 # Skip line 1 (save name)
             for i in $(seq 1 4)
                 do
                 for j in $(seq 1 4)
                     do
-                        countline=$(($countline + 1))
+                        countline=$(($countline + 1)) #To read increasing line
                         eval line$i$j=$(cat $savepath/save$chooption | sed -n "${countline}p" | awk '{print $2}')
                     done
                 done
@@ -231,7 +231,7 @@ saveload()
         else
             menu
         fi
-    elif [ $slstate = 2 ];then
+    elif [ $slstate = 2 ];then #For save operation
         dialog --title 'Menu' --menu "Save Game" 15 50 100 1 $save1 2 $save2 3 $save3 4 $save4 5 $save5 2> /tmp/tmpoption
         chooption=$(cat /tmp/tmpoption)
         if [ $chooption ];then
@@ -258,7 +258,7 @@ bprint()
 menu()
 {
 dialog --title 'Menu' --menu "Command Line 2048" 15 50 100 N "New Game" R "Resume" L "Load" S "Save" Q "Quit" 2> /tmp/tmpchoice
-slstate=0
+slstate=0 # For Check SL Operation
 return=$(cat /tmp/tmpchoice)
 case $return in
     N)
