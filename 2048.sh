@@ -214,23 +214,35 @@ saveload()
     if [ $slstate = 1 ];then
         dialog --title 'Menu' --menu "Load Game" 15 50 100 1 $save1 2 $save2 3 $save3 4 $save4 5 $save5 2> /tmp/tmpoption
         chooption=$(cat /tmp/tmpoption)
-        countline=1 # Skip line 1 - save name 
-        for i in $(seq 1 4)
-            do
-            for j in $(seq 1 4)
+        if [ $(eval echo "\$save$chooption") == "Empty" ];then
+            dialog --msgbox "It's Empty!" 5 15
+            menu
+        elif [ $chooption ];then
+            countline=1 # Skip line 1 - save name 
+            for i in $(seq 1 4)
                 do
-                    countline=$(($countline + 1))
-                    eval line$i$j=$(cat $savepath/save$chooption | sed -n "${countline}p" | awk '{print $2}')
+                for j in $(seq 1 4)
+                    do
+                        countline=$(($countline + 1))
+                        eval line$i$j=$(cat $savepath/save$chooption | sed -n "${countline}p" | awk '{print $2}')
+                    done
                 done
-            done
-        game
+            game
+        else
+            menu
+        fi
     elif [ $slstate = 2 ];then
         dialog --title 'Menu' --menu "Save Game" 15 50 100 1 $save1 2 $save2 3 $save3 4 $save4 5 $save5 2> /tmp/tmpoption
         chooption=$(cat /tmp/tmpoption)
-        dialog --inputbox "Enter your save name" 8 30 2> /tmp/tmpsavename
-        cat ./tempgame >> /tmp/tmpsavename
-        cp /tmp/tmpsavename $savepath/save$chooption && rm /tmp/tmpoption /tmp/tmpsavename
+        if [ $chooption ];then
+            dialog --inputbox "Enter your save name" 8 30 2> /tmp/tmpsavename
+            cat ./tempgame >> /tmp/tmpsavename
+            cp /tmp/tmpsavename $savepath/save$chooption && rm /tmp/tmpsavename
+        fi
         menu
+    fi
+    if [ -e /tmp/tmpoption ];then
+        rm /tmp/tmpoption
     fi
 }
 
