@@ -208,7 +208,15 @@ saveload()
                 eval save$savenum="Empty"
             fi
         done
-    dialog --title 'Save Menu' --menu "Save Game" 15 50 100 1 $save1 2 $save2 3 $save3 4 $save4 5 $save5
+    dialog --title 'Save Menu' --menu "Save Game" 15 50 100 1 $save1 2 $save2 3 $save3 4 $save4 5 $save5 2> /tmp/chooption
+    chooption=$(cat /tmp/chooption)
+    if [ $slstate = 1 ];then
+        
+    elif [ $slstate = 2 ];then
+        dialog --inputbox "Enter your save name" 8 30 2> /tmp/tmpsavename
+        cat ./tempgame >> /tmp/tmpsavename
+        cp /tmp/tmpsavename $savepath/save$chooption && rm /tmp/chooption /tmp/tmpsavename
+    fi
     menu
 }
 
@@ -220,9 +228,11 @@ bprint()
     "$div2\t|$line41\t|$line42\t|$line43\t|$line44\t|\n$div2$div" \
     "\n\tUSE w,s,a,d to MOVE ; q to EXIT \n\t\t Get $winscore to WIN!" | sed 's/0//g' | dialog --progressbox 25 50
 }
+
 menu()
 {
 dialog --title 'Menu' --menu "Command Line 2048" 15 50 100 N "New Game" R "Resume" L "Load" S "Save" Q "Quit" 2> /tmp/chotemp
+slstate=0
 return=$(cat /tmp/chotemp)
 case $return in
     N)
@@ -237,9 +247,11 @@ case $return in
     R)
         ;;
     L)
+        slstate=1
         saveload
         ;;
     S)
+        slstate=2
         saveload
         ;;
     Q) 
