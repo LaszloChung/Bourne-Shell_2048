@@ -9,22 +9,31 @@ getc ()
 
 randpiece()
 {
-    rand=`jot -r 1 1 4` #for  var col
-    rand2=`jot -r 1 1 4` #for var row
-    rand3=`jot -r 1 2 4` #for rand piece 2 or 4
-    while [ $rand3 = 3 ]
+    randc=`jot -r 1 1 4` #for  var col
+    randr=`jot -r 1 1 4` #for var row
+    randp=`jot -r 1 2 4` #for rand piece 2 or 4
+    while [ $randp = 3 ]
         do
-        rand3=`jot -r 1 2 4`
+        randp=`jot -r 1 2 4`
         done
-    if [ $((line$rand$rand2)) = 0 ];then
-        eval line$rand$rand2=$rand3
+    if [ $countp = 16 ];then
+        dialog --ok-label "You Lose" --msgbox "GameOver" 17 37
+        winscore=0
+    elif [ $((line$randc$randr)) = 0 ];then
+        eval line$randc$randr=$randp
+        countp=$(($countp + 1))
     else
         randpiece
     fi
 }
 
-checkover()
+checkwin()
 {
+    if [ $((line$compar$row)) = $winscore ];then
+        dialog --ok-label "You Win" --msgbox "Congratulations !" 17 37
+        winscore=0
+        clear
+    fi
 }
 
 moveup()
@@ -35,8 +44,10 @@ moveup()
             do
                 for compar in $(seq $(($col-1)) 1)
                     do
-                    if [ $((line$compar$row)) = $((line$col$row)) ];then
+                    if [ $((line$compar$row)) = $((line$col$row)) -a $((line$col$row)) != 0 ];then
                         eval line$compar$row=$(($((line$compar$row))*2))
+                        checkwin
+                        countp=$(($countp - 1))
                         eval line$col$row=""
                         break
                     elif [ $((line$compar$row)) != 0 ];then 
@@ -63,15 +74,17 @@ movedown()
             do
                 for compar in $(seq $(($col+1)) 4)
                     do
-                    if [ $((line$compar$row)) = $((line$col$row)) ];then
+                    if [ $((line$compar$row)) = $((line$col$row)) -a $((line$col$row)) != 0 ];then
                         eval line$compar$row=$(($((line$compar$row))*2))
+                        checkwin
+                        countp=$(($countp - 1))
                         eval line$col$row=""
                         break
                     elif [ $((line$compar$row)) != 0 ];then
                         break
                     fi
                     done
-                for compar in $(seq $(($col+1)) 4)
+                for compar in $(seq 4 $(($col+1)))
                     do
                     if [ $((line$compar$row)) = 0 ];then
                         eval line$compar$row=$((line$col$row))
@@ -91,15 +104,17 @@ moveleft()
             do
                 for compar in $(seq $(($row-1)) 1)
                     do
-                    if [ $((line$col$compar)) = $((line$col$row)) ];then
+                    if [ $((line$col$compar)) = $((line$col$row)) -a $((line$col$row)) != 0 ];then
                         eval line$col$compar=$(($((line$col$compar))*2))
+                        checkwin
+                        countp=$(($countp - 1))
                         eval line$col$row=""
                         break
                     elif [ $((line$col$compar)) != 0 ];then
                         break
                     fi
                     done
-                for compar in $(seq $(($row-1)) 1)
+                for compar in $(seq 1 $(($row-1)))
                     do
                     if [ $((line$col$compar)) = 0 ];then
                         eval line$col$compar=$((line$col$row))
@@ -119,15 +134,17 @@ moveright()
             do
                 for compar in $(seq $(($row+1)) 4)
                     do
-                    if [ $((line$col$compar)) = $((line$col$row)) ];then
+                    if [ $((line$col$compar)) = $((line$col$row)) -a $((line$col$row)) != 0 ];then
                         eval line$col$compar=$(($((line$col$compar))*2))
+                        checkwin
+                        countp=$(($countp - 1))
                         eval line$col$row=""
                         break
                     elif [ $((line$col$compar)) != 0 ];then
                         break
                     fi
                     done
-                for compar in $(seq $(($row+1)) 4)
+                for compar in $(seq 4 $(($row+1)))
                     do
                     if [ $((line$col$compar)) = 0 ];then
                         eval line$col$compar=$((line$col$row))
@@ -141,31 +158,31 @@ moveright()
 
 game()
 {
-        winscore=128
-        count=2
+        winscore=8
+        major=0
+        countp=2
         div="\t---------------------------------\n"
         div2="\t|\t|\t|\t|\t|\n"
-        while [ true ] 
+        while [ $winscore != 0 ] 
             do
+                bprint
+                getc press
                 case $press in
                     w)
                         moveup
-                        bprint
                         randpiece
                         ;;
                     s)
                         movedown
-                        bprint
                         randpiece
                         ;;
                     a)
                         moveleft
-                        bprint
                         randpiece
                         ;;
                     d)
                         moveright
-                        bprint
+                        #bprint
                         randpiece
                         ;;
                     q)
@@ -179,8 +196,6 @@ game()
                         menu
                         ;;
                 esac
-                bprint
-                getc press
             done 
 }
 
@@ -207,9 +222,7 @@ case $return in
         break
         ;;
     R)
-        . ./tempgame 
-        echo $line11
-        sleep 10
+        #. ./tempgame 
         ;;
     L) 
         ;;
