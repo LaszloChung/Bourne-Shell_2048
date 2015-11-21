@@ -203,6 +203,10 @@ saveload()
     fi
     for savenum in $(seq 1 5)
         do
+            eval save$savenum=$(cat $savepath/save$savenum | head -n 1)
+            if [ ! -s $savepath/save$savenum ];then
+                eval save$savenum="Empty"
+            fi
         done
     dialog --title 'Save Menu' --menu "Save Game" 15 50 100 1 $save1 2 $save2 3 $save3 4 $save4 5 $save5
     menu
