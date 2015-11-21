@@ -199,14 +199,10 @@ saveload()
     savepath="./saves"
     if [ ! -d $savepath ];then
         mkdir $savepath
+        touch $savepath/save1 $savepath/save2 $savepath/save3 $savepath/save4 $savepath/save5
     fi
     for savenum in $(seq 1 5)
         do
-            tempsave=$(ls $savepath | awk '{print $(eval $$savenum)}')
-            if [ -z $tempsave ];then
-                tempsave="Empty"
-            fi
-            eval save$savenum=$tempsave
         done
     dialog --title 'Save Menu' --menu "Save Game" 15 50 100 1 $save1 2 $save2 3 $save3 4 $save4 5 $save5
     menu
@@ -247,6 +243,7 @@ case $return in
         if [ -e ./tempgame ];then
             rm ./tempgame
         fi
+        break
         ;;
 esac
 }
