@@ -195,6 +195,9 @@ game()
                         ;;
                 esac
             done 
+        if [ -e ./tempgame ];then
+            rm ./tempgame
+        fi
 }
 
 saveload()
@@ -275,6 +278,7 @@ case $return in
         line31="" line32="" line33="" line34=""
         line41="" line42="" line43="" line44=""
         game
+        break
         ;;
     R)
         ;;
