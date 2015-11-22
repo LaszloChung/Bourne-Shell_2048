@@ -275,10 +275,12 @@ case $return in
     L)
         slstate=1
         saveload
+        break
         ;;
     S)
         slstate=2
         saveload
+        break
         ;;
     Q) 
         figlet "Good Bye !"
