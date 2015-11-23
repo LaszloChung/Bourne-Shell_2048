@@ -289,6 +289,10 @@ case $return in
         break
         ;;
     R)
+        if [ ! -e ./tempgame ];then
+           dialog --msgbox "No Game To Resume!" 6 23
+           menu
+        fi
         ;;
     L)
         slstate=1
