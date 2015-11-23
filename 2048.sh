@@ -155,6 +155,37 @@ moveright()
         done
 }
 
+:movepiece() <<!
+{
+    for col in $(seq 1 4)
+        do
+        for row in $(seq 3 1)
+            do
+                for compar in $(seq $(($row+1)) 4)
+                    do
+                    if [ $((line$col$compar)) = $((line$col$row)) -a $((line$col$row)) != 0 ];then
+                        eval line$col$compar=$(($((line$col$compar))*2))
+                        checkwin
+                        countp=$(($countp - 1))
+                        eval line$col$row=""
+                        break
+                    elif [ $((line$col$compar)) != 0 ];then
+                        break
+                    fi
+                    done
+                for compar in $(seq 4 $(($row+1)))
+                    do
+                    if [ $((line$col$compar)) = 0 ];then
+                        eval line$col$compar=$((line$col$row))
+                        eval line$col$row=""
+                        break
+                    fi
+                    done
+            done
+        done
+}
+!
+
 game()
 {
         winscore=128
@@ -167,6 +198,7 @@ game()
                 getc press
                 case $press in
                     w)
+                        major=1
                         moveup
                         randpiece
                         ;;
@@ -214,7 +246,7 @@ saveload()
             fi
         done
     if [ $slstate = 1 ];then #For load operation
-        dialog --title 'Menu' --menu "Load Game" 15 50 100 1 $save1 2 $save2 3 $save3 4 $save4 5 $save5 2> /tmp/tmpoption
+        dialog --title 'Menu' --menu "Load Game" 15 50 100 1 "$save1" 2 "$save2" 3 "$save3" 4 "$save4" 5 "$save5" 2> /tmp/tmpoption
         if [ $? -eq 0 ];then #ok button pressed 
             chooption=$(cat /tmp/tmpoption)
             if [ $(eval echo "\$save$chooption") == "Empty" ];then
@@ -242,17 +274,17 @@ saveload()
         fi
 
     elif [ $slstate = 2 ];then #For save operation
-        dialog --title 'Menu' --menu "Save Game" 15 50 100 1 $save1 2 $save2 3 $save3 4 $save4 5 $save5 2> /tmp/tmpoption
+        dialog --title 'Menu' --menu "Save Game" 15 50 100 1 "$save1" 2 "$save2" 3 "$save3" 4 "$save4" 5 "$save5" 2> /tmp/tmpoption
         if [ $? -eq 0 ];then #ok button pressed 
             chooption=$(cat /tmp/tmpoption)
             if [ $chooption ];then
                 dialog --no-cancel --inputbox "Enter your save name" 8 30 2> /tmp/tmpsavename
-                while [ ! -s /tmp/tmpsavename -a $? -eq 0 ]
-                    do
-                        dialog --no-cancel --inputbox "You enter nothing, please try again" 8 40 2> /tmp/tmpsavename
-                    done
-                    cat ./tempgame >> /tmp/tmpsavename
-                    cp /tmp/tmpsavename $savepath/save$chooption && rm /tmp/tmpsavename
+                #while [ ! -s /tmp/tmpsavename -a $? -eq 0 ]
+                #    do
+                #        dialog --no-cancel --inputbox "You enter nothing, please try again" 8 40 2> /tmp/tmpsavename
+                #    done
+                cat ./tempgame >> /tmp/tmpsavename
+                cp /tmp/tmpsavename $savepath/save$chooption && rm /tmp/tmpsavename
             fi
         fi
         menu
