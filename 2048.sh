@@ -159,7 +159,6 @@ game()
 {
         winscore=128
         major=0
-        countp=2
         div="\t---------------------------------\n"
         div2="\t|\t|\t|\t|\t|\n"
         while [ $winscore != 0 ] 
@@ -223,12 +222,16 @@ saveload()
                 menu
             elif [ $chooption ];then
                 countline=1 # Skip line 1 (save name)
+                countp=0
                 for i in $(seq 1 4)
                     do
                     for j in $(seq 1 4)
                         do
                             countline=$(($countline + 1)) #To read increasing line
                             eval line$i$j=$(cat $savepath/save$chooption | sed -n "${countline}p" | awk '{print $2}')
+                            if [ $((line$i$j)) != 0 ];then
+                                countp=$(($countp + 1))
+                            fi
                         done
                     done
                 game
@@ -273,6 +276,7 @@ return=$(cat /tmp/tmpchoice)
 case $return in
     N)
         echo "" > tempgame
+        countp=2 # For Calculating pieces
         line11="" line12="" line13="" line14=2
         line21="" line22=2 line23="" line24=""
         line31="" line32="" line33="" line34=""
