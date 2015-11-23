@@ -246,9 +246,13 @@ saveload()
         if [ $? -eq 0 ];then #ok button pressed 
             chooption=$(cat /tmp/tmpoption)
             if [ $chooption ];then
-                dialog --inputbox "Enter your save name" 8 30 2> /tmp/tmpsavename
-                cat ./tempgame >> /tmp/tmpsavename
-                cp /tmp/tmpsavename $savepath/save$chooption && rm /tmp/tmpsavename
+                dialog --no-cancel --inputbox "Enter your save name" 8 30 2> /tmp/tmpsavename
+                while [ ! -s /tmp/tmpsavename -a $? -eq 0 ]
+                    do
+                        dialog --no-cancel --inputbox "You enter nothing, please try again" 8 40 2> /tmp/tmpsavename
+                    done
+                    cat ./tempgame >> /tmp/tmpsavename
+                    cp /tmp/tmpsavename $savepath/save$chooption && rm /tmp/tmpsavename
             fi
         fi
         menu
@@ -305,5 +309,5 @@ case $return in
 esac
 }
 
-dialog --exit-label "Go" --textbox ./title/welcome 17 37 && \
+dialog --exit-label "Go" --textbox ./title/welcome 15 36 && \
 menu
