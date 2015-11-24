@@ -277,15 +277,13 @@ saveload()
         dialog --title 'Menu' --menu "Save Game" 15 50 100 1 "$save1" 2 "$save2" 3 "$save3" 4 "$save4" 5 "$save5" 2> /tmp/tmpoption
         if [ $? -eq 0 ];then #ok button pressed 
             chooption=$(cat /tmp/tmpoption)
-            if [ $chooption ];then
-                dialog --no-cancel --inputbox "Enter your save name" 8 30 2> /tmp/tmpsavename
-                #while [ ! -s /tmp/tmpsavename -a $? -eq 0 ]
-                #    do
-                #        dialog --no-cancel --inputbox "You enter nothing, please try again" 8 40 2> /tmp/tmpsavename
-                #    done
-                cat ./tempgame >> /tmp/tmpsavename
-                cp /tmp/tmpsavename $savepath/save$chooption && rm /tmp/tmpsavename
-            fi
+            dialog --no-cancel --inputbox "Enter your save name" 8 30 2> /tmp/tmpsavename
+            while [ ! -s /tmp/tmpsavename -a $? -eq 0 ]
+            do
+                dialog --no-cancel --inputbox "You enter nothing, please try again" 8 40 2> /tmp/tmpsavename
+            done
+            cat ./tempgame >> /tmp/tmpsavename
+            cp /tmp/tmpsavename $savepath/save$chooption && rm /tmp/tmpsavename
         fi
         menu
     fi
