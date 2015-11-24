@@ -17,7 +17,7 @@ randpiece()
         randp=`jot -r 1 2 4`
         done
     if [ $countp = 16 ];then #max 16 pieces
-        dialog --ok-label "You Lose" --textbox ./title/gameover 10 60
+        dialog --ok-label "You Lose" --msgbox "$gameover" 10 60
         winscore=0
     elif [ $((line$randc$randr)) = 0 ];then #looking for empty pieces
         eval line$randc$randr=$randp
@@ -30,7 +30,7 @@ randpiece()
 checkwin()
 {
     if [ $((line$compar$row)) = $winscore -o $((line$col$compar)) = $winscore ];then 
-        dialog --ok-label "You Win" --textbox ./title/win 10 45
+        dialog --ok-label "You Win" --msgbox "$winner" 10 45
         winscore=0
     fi
 }
@@ -304,6 +304,33 @@ bprint()
     "\n\tUSE w,s,a,d to MOVE ; q to EXIT \n\t\t Get $winscore to WIN!" | sed 's/0//g' | dialog --progressbox 25 50
 }
 
+tprint()
+{
+    welcome=$(echo "   ____    _    __  __ _____\n " \
+                   "/ ___|  / \  |  \/  | ____|\n" \
+                   "| |  _  / _ \ | |\/| |  _|\n" \
+                   "| |_| |/ ___ \| |  | | |___\n" \
+                   " \____/_/   \_\_|  |_|_____|\n" \
+                   "  ____   ___  _  _    ___\n" \
+                   " |___ \ / _ \| || |  ( _ )\n" \
+                   "   __) | | | | || |_ / _ \ \n" \
+                   "  / __/| |_| |__   _| (_) |\n" \
+                   " |_____|\___/   |_|  \___/")
+
+    gameover=$(echo "   ____                         ___\n" \
+                    " / ___| __ _ _ __ ___   ___   / _ \__   _____ _ __\n" \
+                    "| |  _ / _\` | '_ \` _ \ / _ \ | | | \ \ / / _ \ '__|\n" \
+                    "| |_| | (_| | | | | | |  __/ | |_| |\ V /  __/ |\n" \
+                    " \____|\__,_|_| |_| |_|\___|  \___/  \_/ \___|_|")
+
+    winner=$(echo " __     ___      _                     _\n" \
+                  "\ \   / (_) ___| |_ ___  _ __ _   _  | |\n" \
+                  " \ \ / /| |/ __| __/ _ \| '__| | | | | |\n" \
+                  "  \ V / | | (__| || (_) | |  | |_| | |_|\n" \
+                  "   \_/  |_|\___|\__\___/|_|   \__, | (_)\n" \
+                  "                              |___/")
+}
+
 menu()
 {
 dialog --title 'Menu' --menu "Command Line 2048" 15 50 100 N "New Game" R "Resume" L "Load" S "Save" Q "Quit" 2> /tmp/tmpchoice
@@ -345,5 +372,6 @@ case $return in
 esac
 }
 
-dialog --exit-label "Go" --textbox ./title/welcome 15 36 && \
+tprint
+dialog --ok-label "Go" --msgbox "$welcome" 15 36 && \
 menu
