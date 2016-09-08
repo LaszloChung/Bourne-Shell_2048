@@ -198,20 +198,27 @@ game()
                 getc press
                 case $press in
                     w)
-                        major=1
                         moveup
+                        bprint
+                        sleep 0.2
                         randpiece
                         ;;
                     s)
                         movedown
+                        bprint
+                        sleep 0.2
                         randpiece
                         ;;
                     a)
                         moveleft
+                        bprint
+                        sleep 0.2
                         randpiece
                         ;;
                     d)
                         moveright
+                        bprint
+                        sleep 0.2
                         randpiece
                         ;;
                     q)
