@@ -31,6 +31,7 @@ checkwin()
 {
     if [ $((line$compar$row)) = $winscore -o $((line$col$compar)) = $winscore ];then 
         dialog --ok-label "You Win" --msgbox "$winner" 10 45
+        exit
         winscore=0
     fi
 }
@@ -188,7 +189,7 @@ moveright()
 
 game()
 {
-        winscore=128
+        winscore=16
         major=0
         div="\t---------------------------------\n"
         div2="\t|\t|\t|\t|\t|\n"
@@ -200,25 +201,25 @@ game()
                     w)
                         moveup
                         bprint
-                        sleep 0.2
+                        sleep 0.15
                         randpiece
                         ;;
                     s)
                         movedown
                         bprint
-                        sleep 0.2
+                        sleep 0.15
                         randpiece
                         ;;
                     a)
                         moveleft
                         bprint
-                        sleep 0.2
+                        sleep 0.15
                         randpiece
                         ;;
                     d)
                         moveright
                         bprint
-                        sleep 0.2
+                        sleep 0.15
                         randpiece
                         ;;
                     q)
