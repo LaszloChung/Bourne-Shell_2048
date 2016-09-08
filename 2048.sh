@@ -189,7 +189,7 @@ moveright()
 
 game()
 {
-        winscore=16
+        winscore=128
         major=0
         div="\t---------------------------------\n"
         div2="\t|\t|\t|\t|\t|\n"
@@ -339,7 +339,7 @@ tprint()
 
 menu()
 {
-dialog --title 'Menu' --menu "Command Line 2048" 15 50 100 N "New Game" R "Resume" L "Load" S "Save" Q "Quit" 2> /tmp/tmpchoice
+dialog --title 'Menu' --menu "Command Line 2048" 15 50 100 N "New Game" R "Resume" L "Load" S "Save" C "Config" Q "Quit" 2> /tmp/tmpchoice
 slstate=0 # For Check SL Operation
 return=$(cat /tmp/tmpchoice)
 case $return in
@@ -366,6 +366,9 @@ case $return in
     S)
         slstate=2
         saveload
+        ;;
+    C)
+        menu
         ;;
     Q) 
         figlet "Good Bye !"
