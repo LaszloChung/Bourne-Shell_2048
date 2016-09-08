@@ -6,9 +6,9 @@ Homework 3-3 for SA
 
 Features
 -------------
-- Resume
+- Resume Game
 - 5 Available Save/Load
-- Config(Soon)
+- Config (Soon)
 
 Screenshots
 -------------
